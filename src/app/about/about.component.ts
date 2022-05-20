@@ -23,7 +23,8 @@ export class AboutComponent implements OnInit {
       () => {}, // No handling error.
       () => { console.log('Complete') }
     );
-      
+    
+    // Using map operator.
     courses$.subscribe(
         courses => { console.log(courses) },
         () => {}, // No handling error.
