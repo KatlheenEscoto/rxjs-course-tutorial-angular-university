@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import { Course } from "../model/course";
 import { createHttpObservable } from '../common/util';
 import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 
 @Component({
@@ -11,25 +12,25 @@ import { map } from 'rxjs/operators';
 })
 export class HomeComponent implements OnInit {
 
-    beginnerCourses: Course[] = [];
-    advancedCourses: Course[] = [];
+    beginnerCourses$: Observable<Course[]>;
+    advancedCourses$: Observable<Course[]>;
 
     ngOnInit() {
         const http$ = createHttpObservable('/api/courses');
-        const courses$ = http$.pipe(
+        const courses$: Observable<Course[]> = http$.pipe(
             map(
                 response => Object.values(response['payload'])
             )
         );
-
-        courses$.subscribe( 
-            courses => { 
-                this.beginnerCourses = courses.filter( course => course['category'] == 'BEGINNER') as Course[];
-                this.advancedCourses = courses.filter( course => course['category'] == 'ADVANCED') as Course[];
-
-            },
-            () => {},
-            () => { console.log('Complete') }
+        this.beginnerCourses$ = courses$.pipe(
+            map(
+                courses => courses.filter( course => course.category == 'BEGINNER' )
+            )
+        );
+        this.advancedCourses$ = courses$.pipe(
+            map(
+                courses => courses.filter( course => course.category == 'ADVANCED' )
+            )
         );
 
 
