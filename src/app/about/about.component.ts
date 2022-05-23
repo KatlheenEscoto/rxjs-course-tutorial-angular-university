@@ -18,11 +18,13 @@ export class AboutComponent implements OnInit {
       map( response => Object.values(response['payload']) )
     );
 
-    http$.subscribe(
+    const subscription$ = http$.subscribe(
       courses => { console.log(courses) },
       () => {}, // No handling error.
       () => { console.log('Complete') }
     );
+
+    setTimeout(() => subscription$.unsubscribe(), 0);
     
     // Using map operator.
     courses$.subscribe(
